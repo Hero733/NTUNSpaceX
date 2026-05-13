@@ -111,19 +111,19 @@
 
     <div class="stars-bg"></div>
 
-    <div id="loginPage" class="relative z-10 flex min-h-screen items-center justify-center p-6">
-        <div class="glass-panel p-10 w-full max-w-md text-center rounded-[2.5rem] animate-in">
-            <div class="w-28 h-28 mx-auto mb-6 relative hover:scale-105 transition-transform">
+    <div id="loginPage" class="relative z-10 flex min-h-screen items-center justify-center p-4">
+        <div class="glass-panel p-6 md:p-10 w-full max-w-sm md:max-w-md text-center rounded-[2.5rem] animate-in mx-auto">
+            <div class="w-24 h-24 md:w-28 md:h-28 mx-auto mb-6 relative hover:scale-105 transition-transform">
                 <img src="https://upload.wikimedia.org/wikipedia/th/thumb/b/b3/Ntun_logo.png/250px-Ntun_logo.png" alt="Logo" class="relative z-10 w-full h-full object-contain drop-shadow-xl">
             </div>
-            <h1 class="text-4xl font-black mb-1 tracking-tight text-white uppercase drop-shadow-md">NTUN SPACE</h1>
+            <h1 class="text-3xl md:text-4xl font-black mb-1 tracking-tight text-white uppercase drop-shadow-md">NTUN SPACE</h1>
             <p class="text-white/90 mb-8 font-light text-sm">ระบบจองที่นั่งออนไลน์พรีเมียม</p>
             
-            <div class="bg-white rounded-full p-2 w-fit mx-auto mb-4 shadow-xl hover:shadow-2xl transition-all">
+            <div class="bg-white rounded-full p-1.5 w-max max-w-[95%] overflow-hidden mx-auto mb-4 shadow-xl hover:shadow-2xl transition-all flex justify-center items-center">
                 <div id="g_id_onload" data-client_id="118310489688-8o6l3ogkihci3des8aab8qdd83a7r6gg.apps.googleusercontent.com" data-callback="handleGoogleLogin"></div>
-                <div class="g_id_signin flex justify-center" data-type="standard" data-shape="pill" data-theme="outline" data-size="large"></div>
+                <div class="g_id_signin flex justify-center w-full scale-90 md:scale-100 origin-center" data-type="standard" data-shape="pill" data-theme="outline" data-size="large"></div>
             </div>
-            <p class="mt-6 text-[11px] opacity-80 font-medium tracking-wide text-white uppercase">รองรับเฉพาะบัญชี @ntun.ac.th เท่านั้น</p>
+            <p class="mt-6 text-[10px] md:text-[11px] opacity-80 font-medium tracking-wide text-white uppercase">รองรับเฉพาะบัญชี @ntun.ac.th เท่านั้น</p>
         </div>
     </div>
 
@@ -535,8 +535,8 @@
 
                     <div class="map-area w-full max-w-[1100px] p-6 md:p-10 h-[65vh] md:h-[650px] border border-white/20" id="mapContainer">
                         <div id="roomCanvas">
-                            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-16 bg-white/10 rounded-2xl border border-white/20 flex items-center justify-center shadow-sm backdrop-blur-md">
-                                <span class="text-sm tracking-[0.4em] text-white/90 font-black uppercase drop-shadow-md"><i class='bx bx-chalkboard'></i> หน้ากระดาน / เวที</span>
+                            <div class="absolute top-0 left-[462px] -translate-x-1/2 w-[280px] md:w-96 h-16 bg-white/10 rounded-2xl border border-white/20 flex items-center justify-center shadow-sm backdrop-blur-md">
+                                <span class="text-xs md:text-sm tracking-[0.2em] md:tracking-[0.4em] text-white/90 font-black uppercase drop-shadow-md"><i class='bx bx-chalkboard'></i> หน้ากระดาน / เวที</span>
                             </div>
                             
                             ${room.seats.map(s => {
