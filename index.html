@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NTUN Space - Premium Seating</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -30,7 +30,6 @@
             scroll-behavior: smooth;
         }
 
-        /* เอฟเฟกต์ดวงดาว */
         .stars-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
@@ -54,64 +53,60 @@
             border: 1px solid var(--glass-border); box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.15);
         }
 
-        /* ปรับขนาดโต๊ะและดีไซน์ให้สมจริง */
+        /* ดีไซน์โต๊ะเรียน */
         .desk { 
             width: 70px; height: 85px; position: absolute; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
             cursor: pointer; touch-action: none; z-index: 20;
         }
-        .desk:hover { transform: translateY(-5px) scale(1.05); z-index: 30; }
+        .desk:hover:not(.dragging) { transform: translateY(-5px) scale(1.05); z-index: 30; }
         
-        /* เก้าอี้ (พนักพิง) */
+        /* ปิด Transition ตอนลากให้สมูทติดนิ้ว 100% */
+        .desk.dragging { transition: none !important; z-index: 50; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.3)); transform: scale(1.1); }
+
         .desk-chair { fill: rgba(255, 255, 255, 0.3); stroke: rgba(255, 255, 255, 0.6); stroke-width: 1.5; rx: 8; transition: all 0.3s; }
-        /* โต๊ะ (ไม้) */
         .desk-top { fill: rgba(255, 255, 255, 0.5); stroke: rgba(255, 255, 255, 0.9); stroke-width: 1.5; rx: 6; transition: all 0.3s; }
-        /* ร่องใส่ดินสอ */
         .desk-line { stroke: rgba(255, 255, 255, 0.7); stroke-width: 1.5; stroke-linecap: round; }
 
-        /* สถานะถูกจอง (สีแดง/น้ำเงิน) */
         .booked .desk-chair { fill: rgba(239, 68, 68, 0.6); stroke: #ef4444; }
         .booked .desk-top { fill: rgba(248, 113, 113, 0.8); stroke: #fee2e2; }
-        .booked:hover { transform: none; cursor: not-allowed; } /* ไม่ให้ขยับตอน Hover ถ้าไม่ใช่สิทธิ์แอดมิน */
+        .booked:hover:not(.dragging) { transform: none; cursor: not-allowed; }
 
-        /* สถานะที่นั่งของเรา (สีเขียว) */
         .my-seat .desk-chair { fill: rgba(34, 197, 94, 0.6); stroke: #22c55e; }
         .my-seat .desk-top { fill: rgba(74, 222, 128, 0.9); stroke: #ffffff; filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.8)); }
         
-        .desk-label { 
-            position: absolute; top: 38px; width: 100%; text-align: center; font-size: 14px; 
-            font-weight: 800; color: #1e293b; pointer-events: none; text-shadow: 0px 0px 4px rgba(255,255,255,0.8); 
-        }
+        .desk-label { position: absolute; top: 38px; width: 100%; text-align: center; font-size: 14px; font-weight: 800; color: #1e293b; pointer-events: none; text-shadow: 0px 0px 4px rgba(255,255,255,0.8); }
 
-        /* Tooltip โต๊ะ */
         .desk-tooltip {
             position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-10px);
-            background: rgba(0,0,0,0.8); color: white; padding: 6px 12px; rounded-xl; font-size: 12px;
+            background: rgba(0,0,0,0.8); color: white; padding: 6px 12px; font-size: 12px;
             white-space: nowrap; border-radius: 8px; opacity: 0; pointer-events: none; transition: 0.2s;
             border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px);
         }
-        .desk:hover .desk-tooltip { opacity: 1; transform: translateX(-50%) translateY(-5px); }
+        .desk:hover:not(.dragging) .desk-tooltip { opacity: 1; transform: translateX(-50%) translateY(-5px); }
 
-        /* การจัดการ Responsive Map */
-        .map-area { 
-            border-radius: 2rem; background: rgba(0, 0, 0, 0.15); box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1); 
-            position: relative; overflow: auto; display: flex; justify-content: center;
-        }
-        
-        #roomCanvas { position: relative; width: 900px; height: 800px; transform-origin: top center; transition: transform 0.3s ease; }
+        .map-area { border-radius: 2rem; background: rgba(0, 0, 0, 0.15); box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1); position: relative; overflow: auto; display: flex; justify-content: center; }
+        #roomCanvas { position: relative; width: 1000px; height: 800px; transform-origin: top center; transition: transform 0.3s ease; }
 
-        /* สเกลหน้าจอตามอุปกรณ์ */
-        @media (max-width: 600px) {
-            #roomCanvas { zoom: 0.55; } /* มือถือย่อลงเกือบครึ่ง ให้เห็นชัดๆ */
-            .map-area { justify-content: flex-start; }
-        }
-        @media (min-width: 601px) and (max-width: 1024px) {
-            #roomCanvas { zoom: 0.8; } /* แท็บเล็ตย่อเล็กน้อย */
-        }
+        @media (max-width: 600px) { #roomCanvas { zoom: 0.55; } .map-area { justify-content: flex-start; } }
+        @media (min-width: 601px) and (max-width: 1024px) { #roomCanvas { zoom: 0.8; } }
 
         .animate-in { animation: fadeIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
         #g_id_onload, .g_id_signin { background-color: white; border-radius: 999px; }
+
+        /* นาฬิกานับถอยหลัง */
+        .countdown-box { display: flex; gap: 12px; align-items: center; justify-content: center; }
+        .time-block { 
+            background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px; border-radius: 16px; min-width: 65px; text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); backdrop-filter: blur(10px);
+        }
+        .time-val { font-size: 24px; font-weight: 800; line-height: 1; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        .time-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+        .time-colon { font-size: 24px; font-weight: 800; color: rgba(255,255,255,0.5); animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .expired-text { font-size: 20px; font-weight: 800; color: #fca5a5; text-shadow: 0 0 15px rgba(239,68,68,0.8); letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -135,35 +130,22 @@
     </div>
 
     <div id="mainApp" class="hidden min-h-screen flex flex-col relative z-10">
-        
         <header class="p-4 md:p-6 flex flex-col sm:flex-row justify-between items-center gap-4 max-w-7xl mx-auto w-full animate-in">
             <div class="glass-panel px-5 py-2 flex items-center gap-4 rounded-full">
                 <div class="w-10 h-10 flex items-center justify-center"><img src="https://upload.wikimedia.org/wikipedia/th/thumb/b/b3/Ntun_logo.png/250px-Ntun_logo.png" class="w-full h-full object-contain drop-shadow-md"></div>
-                <div class="text-left">
-                    <h1 class="text-white font-bold text-sm md:text-base leading-tight uppercase tracking-widest drop-shadow-sm">NTUN SPACE</h1>
-                    <p class="text-white/80 text-[10px] md:text-xs">Premium Seating</p>
-                </div>
+                <div class="text-left"><h1 class="text-white font-bold text-sm md:text-base leading-tight uppercase tracking-widest drop-shadow-sm">NTUN SPACE</h1><p class="text-white/80 text-[10px] md:text-xs">Premium Seating</p></div>
             </div>
-
             <div class="glass-panel p-1.5 flex items-center gap-2 rounded-full">
-                <button onclick="activeRoomId=null; renderUI()" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all">
-                    <i class='bx bx-home-alt text-lg'></i> <span class="hidden md:inline">หน้าแรก</span>
-                </button>
-                <div class="flex items-center gap-2 px-3 border-l border-white/30">
-                    <img id="userImg" src="" class="w-8 h-8 rounded-full border-2 border-white/80 shadow-sm">
-                    <span id="userName" class="text-white text-sm font-medium hidden md:block drop-shadow-sm"></span>
-                </div>
-                <button onclick="logout()" class="bg-red-500/80 hover:bg-red-500 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all shadow-sm">
-                    <i class='bx bx-log-out text-lg'></i>
-                </button>
+                <button onclick="activeRoomId=null; renderUI()" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all"><i class='bx bx-home-alt text-lg'></i> <span class="hidden md:inline">หน้าแรก</span></button>
+                <div class="flex items-center gap-2 px-3 border-l border-white/30"><img id="userImg" src="" class="w-8 h-8 rounded-full border-2 border-white/80 shadow-sm"><span id="userName" class="text-white text-sm font-medium hidden md:block drop-shadow-sm"></span></div>
+                <button onclick="logout()" class="bg-red-500/80 hover:bg-red-500 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all shadow-sm"><i class='bx bx-log-out text-lg'></i></button>
             </div>
         </header>
 
-        <main class="flex-grow max-w-6xl mx-auto w-full px-4 md:px-6 pb-20">
+        <main class="flex-grow max-w-7xl mx-auto w-full px-4 md:px-6 pb-20">
             <section id="welcomeSection" class="mt-4 mb-8 text-left animate-in" style="animation-delay: 0.1s;">
                 <p class="text-white/90 mb-1 font-light tracking-wide">ยินดีต้อนรับกลับมา</p>
                 <h2 class="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-white drop-shadow-lg">สวัสดี, <span id="welcomeName">นักเรียน</span></h2>
-                
                 <div id="dashboardStats" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
             </section>
 
@@ -199,6 +181,8 @@
         let currentUser = null;
         let activeRoomId = null;
         let classrooms = {};
+        let timerInterval = null;
+        let isExpired = false;
 
         function decodeJwt(token) {
             try { return JSON.parse(decodeURIComponent(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''))); } catch (e) { return null; }
@@ -209,12 +193,12 @@
             const email = payload.email.toLowerCase();
             if (!email.endsWith('@ntun.ac.th')) return Swal.fire({ icon: 'error', title: 'ไม่อนุญาต', text: 'เข้าสู่ระบบด้วย @ntun.ac.th เท่านั้น', background: 'rgba(255,255,255,0.95)' });
             currentUser = { email, name: payload.name, role: (email === SUPER_ADMIN) ? 'super_admin' : 'student', picture: payload.picture };
-            localStorage.setItem('ntun_session_v13', JSON.stringify(currentUser));
+            localStorage.setItem('ntun_session_v14', JSON.stringify(currentUser));
             initApp();
         }
 
         function initApp() {
-            const saved = localStorage.getItem('ntun_session_v13');
+            const saved = localStorage.getItem('ntun_session_v14');
             if (!saved) return;
             currentUser = JSON.parse(saved);
             document.getElementById('loginPage').style.display = 'none';
@@ -236,36 +220,17 @@
             });
         }
 
-        function logout() { localStorage.removeItem('ntun_session_v13'); location.reload(); }
+        function logout() { localStorage.removeItem('ntun_session_v14'); location.reload(); }
 
         function updateStats() {
-            if (!['super_admin', 'admin', 'teacher'].includes(currentUser?.role)) {
-                document.getElementById('dashboardStats').innerHTML = ''; return;
-            }
-            let totalR = Object.keys(classrooms).length;
-            let totalS = 0; let totalB = 0;
-            Object.values(classrooms).forEach(r => {
-                totalS += r.seats.length;
-                totalB += r.seats.filter(s => s.bookedBy).length;
-            });
-            
+            if (!['super_admin', 'admin', 'teacher'].includes(currentUser?.role)) { document.getElementById('dashboardStats').innerHTML = ''; return; }
+            let totalR = Object.keys(classrooms).length; let totalS = 0; let totalB = 0;
+            Object.values(classrooms).forEach(r => { totalS += r.seats.length; totalB += r.seats.filter(s => s.bookedBy).length; });
             document.getElementById('dashboardStats').innerHTML = `
-                <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-                    <span class="text-white/70 text-xs font-semibold uppercase">ห้องเรียนทั้งหมด</span>
-                    <span class="text-2xl font-black text-white">${totalR}</span>
-                </div>
-                <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-                    <span class="text-white/70 text-xs font-semibold uppercase">ที่นั่งทั้งหมด</span>
-                    <span class="text-2xl font-black text-white">${totalS}</span>
-                </div>
-                <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-                    <span class="text-white/70 text-xs font-semibold uppercase">ถูกจองแล้ว</span>
-                    <span class="text-2xl font-black text-red-200">${totalB}</span>
-                </div>
-                <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-                    <span class="text-white/70 text-xs font-semibold uppercase">เปอร์เซ็นต์จอง</span>
-                    <span class="text-2xl font-black text-green-300">${totalS > 0 ? Math.round((totalB/totalS)*100) : 0}%</span>
-                </div>
+                <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center"><span class="text-white/70 text-xs font-semibold uppercase">ห้องเรียนทั้งหมด</span><span class="text-2xl font-black text-white">${totalR}</span></div>
+                <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center"><span class="text-white/70 text-xs font-semibold uppercase">ที่นั่งทั้งหมด</span><span class="text-2xl font-black text-white">${totalS}</span></div>
+                <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center"><span class="text-white/70 text-xs font-semibold uppercase">ถูกจองแล้ว</span><span class="text-2xl font-black text-red-200">${totalB}</span></div>
+                <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center text-center"><span class="text-white/70 text-xs font-semibold uppercase">เปอร์เซ็นต์จอง</span><span class="text-2xl font-black text-green-300">${totalS > 0 ? Math.round((totalB/totalS)*100) : 0}%</span></div>
             `;
         }
 
@@ -294,23 +259,31 @@
                     if (room.name.toLowerCase().includes(query) || id.toLowerCase().includes(query)) {
                         const booked = room.seats.filter(s => s.bookedBy).length;
                         const percent = (booked/room.seats.length)*100 || 0;
+                        
+                        let timerStatus = '';
+                        if(room.deadline) {
+                            const isPast = new Date().getTime() > room.deadline;
+                            timerStatus = `<span class="text-xs ${isPast ? 'text-red-300' : 'text-blue-200'} font-medium"><i class='bx bx-time'></i> ${isPast ? 'หมดเวลาจองแล้ว' : 'มีกำหนดเวลาจอง'}</span>`;
+                        }
+
                         html += `
-                        <div class="glass-panel p-6 rounded-[2rem] hover:bg-white/[0.2] transition-all flex flex-col group">
+                        <div class="glass-panel p-6 rounded-[2rem] hover:bg-white/[0.2] transition-all flex flex-col group relative">
                             <div class="flex justify-between items-start mb-3">
                                 <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-mono border border-white/30 shadow-sm"><i class='bx bx-hash'></i> ${id}</span>
                                 <button onclick="deleteRoom('${id}')" class="text-white/50 hover:text-red-400 bg-black/10 hover:bg-black/20 w-8 h-8 rounded-full flex items-center justify-center transition"><i class='bx bx-trash'></i></button>
                             </div>
-                            <h3 class="text-2xl font-bold mb-4 text-white drop-shadow-sm truncate">${room.name}</h3>
-                            <div class="flex justify-between text-sm text-white/90 font-medium mb-2">
-                                <span>ความจุ</span><span>${booked} / ${room.seats.length}</span>
-                            </div>
+                            <h3 class="text-2xl font-bold mb-1 text-white drop-shadow-sm truncate">${room.name}</h3>
+                            <div class="mb-4 h-5">${timerStatus}</div>
+
+                            <div class="flex justify-between text-sm text-white/90 font-medium mb-2"><span>ความจุ</span><span>${booked} / ${room.seats.length}</span></div>
                             <div class="w-full bg-black/20 rounded-full h-2 mb-6 shadow-inner"><div class="bg-green-400 h-2 rounded-full shadow-[0_0_8px_rgba(74,222,128,0.5)]" style="width: ${percent}%"></div></div>
                             <div class="mt-auto space-y-3">
                                 <button onclick="enterRoom('${id}')" class="w-full bg-white text-[#5AB2FF] py-3 rounded-2xl font-bold hover:scale-[1.02] transition-transform shadow-lg">เปิดห้องเรียน</button>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <button onclick="resetLayout('${id}')" class="bg-black/10 hover:bg-black/20 py-2 rounded-xl text-xs font-medium text-white border border-white/20">จัดผังใหม่</button>
-                                    <button onclick="clearAllBookings('${id}')" class="bg-red-500/20 hover:bg-red-500/40 py-2 rounded-xl text-xs font-medium text-red-100 border border-red-300/30">ล้างการจอง</button>
+                                    <button onclick="setDeadline('${id}')" class="bg-black/10 hover:bg-black/20 py-2 rounded-xl text-xs font-medium text-white border border-white/20"><i class='bx bx-time'></i> ตั้งเวลาปิดจอง</button>
+                                    <button onclick="resetLayout('${id}')" class="bg-black/10 hover:bg-black/20 py-2 rounded-xl text-xs font-medium text-white border border-white/20"><i class='bx bx-grid-alt'></i> จัดผัง 3:3:2</button>
                                 </div>
+                                <button onclick="clearAllBookings('${id}')" class="w-full bg-red-500/20 hover:bg-red-500/40 py-2 rounded-xl text-xs font-medium text-red-100 border border-red-300/30">ล้างการจองทั้งหมด</button>
                             </div>
                         </div>`;
                     }
@@ -349,6 +322,23 @@
             const isStaff = ['super_admin', 'admin', 'teacher'].includes(currentUser.role);
             const mySeat = room.seats.find(s => s.bookedBy === currentUser.email);
             
+            // เช็คและแสดง Timer
+            let timerHTML = '';
+            isExpired = false;
+            if (room.deadline) {
+                timerHTML = `
+                <div class="mb-6 w-full flex flex-col items-center justify-center bg-black/10 py-4 px-6 rounded-3xl border border-white/10 shadow-inner">
+                    <p class="text-xs uppercase tracking-widest text-white/60 mb-3 font-semibold"><i class='bx bx-timer'></i> เวลาที่เหลือสำหรับการจอง</p>
+                    <div id="countdownContainer" class="countdown-box">
+                        <div class="time-block"><div id="t-d" class="time-val">00</div><div class="time-lbl">วัน</div></div> <span class="time-colon">:</span>
+                        <div class="time-block"><div id="t-h" class="time-val">00</div><div class="time-lbl">ชม.</div></div> <span class="time-colon">:</span>
+                        <div class="time-block"><div id="t-m" class="time-val">00</div><div class="time-lbl">นาที</div></div> <span class="time-colon">:</span>
+                        <div class="time-block"><div id="t-s" class="time-val">00</div><div class="time-lbl">วินาที</div></div>
+                    </div>
+                </div>`;
+                startTimer(room.deadline);
+            }
+
             document.getElementById('contentArea').innerHTML = `
                 <div class="glass-panel p-4 md:p-8 rounded-[2.5rem] animate-in flex flex-col items-center relative shadow-2xl">
                     <div class="w-full flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
@@ -359,6 +349,8 @@
                             ${isStaff ? `<button onclick="exportExcel()" class="bg-white text-green-600 px-5 py-2.5 rounded-full text-sm font-bold shadow-lg flex items-center gap-2"><i class='bx bxs-file-export text-lg'></i> EXPORT</button>` : ''}
                         </div>
                     </div>
+
+                    ${timerHTML}
 
                     <div class="map-area w-full max-w-[1100px] p-6 md:p-10 h-[65vh] md:h-[650px] border border-white/20" id="mapContainer">
                         <div id="roomCanvas">
@@ -400,7 +392,69 @@
                 </div>`;
         }
 
+        function startTimer(deadline) {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = deadline - now;
+                
+                if (distance < 0) {
+                    clearInterval(timerInterval);
+                    isExpired = true;
+                    if(document.getElementById('countdownContainer')) {
+                        document.getElementById('countdownContainer').innerHTML = `<div class="expired-text"><i class='bx bxs-error-circle'></i> หมดเวลาการจองแล้ว</div>`;
+                    }
+                    return;
+                }
+                
+                isExpired = false;
+                if(document.getElementById('t-d')) {
+                    const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const s = Math.floor((distance % (1000 * 60)) / 1000);
+                    
+                    document.getElementById('t-d').innerText = d.toString().padStart(2, '0');
+                    document.getElementById('t-h').innerText = h.toString().padStart(2, '0');
+                    document.getElementById('t-m').innerText = m.toString().padStart(2, '0');
+                    document.getElementById('t-s').innerText = s.toString().padStart(2, '0');
+                }
+            }, 1000);
+        }
+
+        async function setDeadline(roomId) {
+            const { value: datetime } = await Swal.fire({
+                title: 'ตั้งเวลาปิดจองที่นั่ง',
+                html: `<div class="text-left text-slate-700 text-sm mb-2 font-bold">เลือกวันและเวลาที่สิ้นสุด:</div>
+                       <input type="datetime-local" id="deadline-input" class="w-full bg-slate-100 p-4 rounded-xl border border-slate-300 focus:outline-[#5AB2FF]">
+                       <div class="mt-4 text-xs text-red-500">* ทริค: หากต้องการยกเลิกเวลา ให้ปล่อยว่างไว้แล้วกดบันทึก</div>`,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึกเวลา',
+                confirmButtonColor: '#5AB2FF',
+                background: 'rgba(255,255,255,0.95)',
+                preConfirm: () => document.getElementById('deadline-input').value
+            });
+
+            if (datetime !== undefined) {
+                const timestamp = datetime ? new Date(datetime).getTime() : null;
+                await db.collection("classrooms").doc(roomId).update({ deadline: timestamp });
+                Swal.fire({ title: 'บันทึกสำเร็จ', icon: 'success', timer: 1500, showConfirmButton: false, background: 'rgba(255,255,255,0.95)' });
+            }
+        }
+
+        // --- แก้ไขระบบคำนวณตำแหน่ง 3:3:2 ---
+        function getSeatLayoutPosition(i) {
+            const col = i % 8; const row = Math.floor(i / 8);
+            // 3-3-2 แปลว่า มีช่องว่างหลังเสาที่ 3 (index 2) และ เสาที่ 6 (index 5)
+            let xOffset = (col >= 3 ? 70 : 0) + (col >= 6 ? 70 : 0);
+            return { x: (col * 85) + 60 + xOffset, y: (row * 120) + 120 };
+        }
+
         async function randomSeat() {
+            if (isExpired && !['super_admin', 'admin', 'teacher'].includes(currentUser.role)) {
+                return Swal.fire({ icon: 'error', title: 'หมดเวลาจอง', text: 'ระบบปิดรับการจองแล้ว', background: 'rgba(255,255,255,0.95)' });
+            }
             const room = classrooms[activeRoomId];
             const available = room.seats.filter(s => !s.bookedBy);
             if(available.length === 0) return Swal.fire({title: 'เสียใจด้วย!', text: 'ที่นั่งเต็มหมดแล้ว', icon: 'error', background: 'rgba(255,255,255,0.95)'});
@@ -408,8 +462,7 @@
             Swal.fire({ title: 'กำลังสุ่มที่นั่ง...', allowOutsideClick: false, showConfirmButton: false, background: 'rgba(255,255,255,0.95)', didOpen: () => Swal.showLoading() });
             setTimeout(() => {
                 const random = available[Math.floor(Math.random() * available.length)];
-                Swal.close();
-                handleBooking(random.id, true);
+                Swal.close(); handleBooking(random.id, true);
             }, 800);
         }
 
@@ -431,15 +484,19 @@
         let dragId = null, isMoving = false, startX, startY, initX, initY;
         function startDrag(e, id) {
             const isStaff = ['super_admin', 'admin', 'teacher'].includes(currentUser.role);
+            
+            // ถ้านักเรียนกด ให้เปิดจองเลย ไม่ต้องรออีเวนต์ลากจบ (เพื่อความลื่นไหล)
+            if (!isStaff) { handleBooking(id); return; }
+
             dragId = id; isMoving = false;
             const ev = e.touches ? e.touches[0] : e;
-            
-            // ชดเชยค่า zoom ถ้าย่อจอ
             const zoomLevel = window.innerWidth <= 600 ? 0.55 : (window.innerWidth <= 1024 ? 0.8 : 1);
             startX = ev.clientX / zoomLevel; startY = ev.clientY / zoomLevel;
             
             const el = document.getElementById('desk-'+id);
-            initX = parseInt(el.style.left); initY = parseInt(el.style.top);
+            // *** ปิด Transition ตอนลาก เพื่อให้ติดนิ้ว 100% ***
+            el.classList.add('dragging');
+            initX = parseInt(el.style.left) || 0; initY = parseInt(el.style.top) || 0;
             
             const moveHandler = (me) => {
                 const mev = me.touches ? me.touches[0] : me;
@@ -451,6 +508,8 @@
             const endHandler = () => {
                 document.removeEventListener('mousemove', moveHandler); document.removeEventListener('mouseup', endHandler);
                 document.removeEventListener('touchmove', moveHandler); document.removeEventListener('touchend', endHandler);
+                el.classList.remove('dragging'); // เปิด Transition กลับ
+                
                 if(isMoving && isStaff) {
                     const room = classrooms[activeRoomId]; const seat = room.seats.find(s => s.id === dragId);
                     seat.x = parseInt(el.style.left); seat.y = parseInt(el.style.top);
@@ -465,6 +524,10 @@
         async function handleBooking(sid, skipConfirm = false) {
             const room = classrooms[activeRoomId]; const seat = room.seats.find(s => s.id === sid);
             const isStaff = ['super_admin', 'admin', 'teacher'].includes(currentUser.role);
+
+            if (!isStaff && isExpired && !seat.bookedBy) {
+                return Swal.fire({ icon: 'error', title: 'หมดเวลาจอง', text: 'ระบบปิดรับการจองแล้ว', background: 'rgba(255,255,255,0.95)' });
+            }
 
             if (seat.bookedBy) {
                 if (seat.bookedBy === currentUser.email || isStaff) {
@@ -509,11 +572,10 @@
                     const [name, count, pass] = res.value; const id = Math.random().toString(36).substring(2, 8).toUpperCase();
                     const seats = [];
                     for(let i=0; i<parseInt(count); i++) {
-                        const col = i % 8; const row = Math.floor(i / 8);
-                        let xOffset = (col >= 3 ? 50 : 0) + (col >= 5 ? 50 : 0); // แบ่งโซนทางเดิน 2 ช่อง
-                        seats.push({ id: i+1, x: (col * 90) + 70 + xOffset, y: (row * 120) + 120, bookedBy: null, name: null });
+                        const pos = getSeatLayoutPosition(i);
+                        seats.push({ id: i+1, x: pos.x, y: pos.y, bookedBy: null, name: null });
                     }
-                    db.collection("classrooms").doc(id).set({ name, seats, password: pass || null });
+                    db.collection("classrooms").doc(id).set({ name, seats, password: pass || null, deadline: null });
                     Swal.fire({ title: 'สำเร็จ', text: `รหัสห้อง: ${id}`, icon: 'success', background: 'rgba(255,255,255,0.95)' });
                 }
             });
@@ -522,12 +584,11 @@
         async function resetLayout(roomId) {
             const room = classrooms[roomId];
             const updatedSeats = room.seats.map((seat, i) => {
-                const col = i % 8; const row = Math.floor(i / 8);
-                let xOffset = (col >= 3 ? 50 : 0) + (col >= 5 ? 50 : 0);
-                return { ...seat, x: (col * 90) + 70 + xOffset, y: (row * 120) + 120 };
+                const pos = getSeatLayoutPosition(i);
+                return { ...seat, x: pos.x, y: pos.y };
             });
             await db.collection("classrooms").doc(roomId).update({ seats: updatedSeats });
-            Swal.fire({ title: 'จัดผังใหม่สำเร็จ', icon: 'success', timer: 1000, showConfirmButton:false, background: 'rgba(255,255,255,0.95)' });
+            Swal.fire({ title: 'จัดผังใหม่สำเร็จ', text: 'เรียงแบบ 3:3:2 เรียบร้อย', icon: 'success', timer: 1500, showConfirmButton:false, background: 'rgba(255,255,255,0.95)' });
         }
 
         async function clearAllBookings(roomId) {
