@@ -17,24 +17,23 @@
 
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.12);
-            --glass-border: rgba(255, 255, 255, 0.25);
-            --theme-bg-start: #4b9beb;
-            --theme-bg-end: #2d5aa8;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.3);
         }
 
-        body { 
+        body, html { 
             font-family: 'Kanit', sans-serif; 
-            /* พื้นหลังสีฟ้าไล่ระดับสไตล์ที่ต้องการ */
-            background: linear-gradient(135deg, var(--theme-bg-start) 0%, var(--theme-bg-end) 100%);
-            background-attachment: fixed;
-            min-height: 100vh; 
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
             color: white; 
             overflow-x: hidden;
-            position: relative;
+            /* ล็อกพื้นหลังไล่สี ฟ้า -> ม่วง -> ชมพู สไตล์คล้ายรูปตัวอย่าง */
+            background: linear-gradient(180deg, #5AB2FF 0%, #8390FA 50%, #F5A9CE 100%) !important;
+            background-attachment: fixed !important;
         }
 
-        /* ----- เอฟเฟกต์หิมะ/ดวงดาวเล็กๆ ----- */
+        /* เอฟเฟกต์ดวงดาว */
         .stars-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -51,92 +50,94 @@
                 radial-gradient(1.5px 1.5px at 90vw 90vh, #ffffff, rgba(0,0,0,0));
             background-repeat: repeat;
             background-size: 500px 500px;
-            opacity: 0.7;
-            z-index: -3;
+            opacity: 0.8;
+            z-index: 0;
             pointer-events: none;
             animation: drift 150s linear infinite;
         }
         @keyframes drift { from { background-position: 0 0; } to { background-position: 500px 500px; } }
 
-        /* ----- กล่อง Glassmorphism สไตล์ JWC ----- */
+        /* กล่องกระจก Glassmorphism */
         .glass-panel { 
             background: var(--glass-bg); 
             backdrop-filter: blur(16px); 
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.15);
         }
 
         .nav-pill {
-            background: rgba(255, 255, 255, 0.15); 
+            background: rgba(255, 255, 255, 0.2); 
             backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 999px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.05);
         }
 
-        /* ----- ดีไซน์โต๊ะเรียน (คงระบบเดิมไว้) ----- */
-        .desk { width: 65px; height: 75px; position: absolute; transition: all 0.3s ease; cursor: pointer; touch-action: none; }
-        .desk-top { fill: rgba(255, 255, 255, 0.3); stroke: rgba(255, 255, 255, 0.5); stroke-width: 1.5; rx: 12; }
-        .booked .desk-top { fill: rgba(129, 140, 248, 0.6); stroke: #818cf8; }
-        .my-seat .desk-top { fill: rgba(74, 222, 128, 0.8); stroke: #22c55e; filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.6)); }
+        /* ดีไซน์โต๊ะเรียน */
+        .desk { width: 65px; height: 75px; position: absolute; transition: all 0.3s ease; cursor: pointer; touch-action: none; z-index: 20; }
+        .desk-top { fill: rgba(255, 255, 255, 0.4); stroke: rgba(255, 255, 255, 0.8); stroke-width: 1.5; rx: 12; }
+        .booked .desk-top { fill: rgba(129, 140, 248, 0.8); stroke: #e0e7ff; }
+        .my-seat .desk-top { fill: rgba(74, 222, 128, 0.9); stroke: #ffffff; filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.8)); }
         
-        .desk-label { position: absolute; top: 22px; width: 100%; text-align: center; font-size: 10px; font-weight: 700; color: white; pointer-events: none; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 4px; }
+        .desk-label { position: absolute; top: 22px; width: 100%; text-align: center; font-size: 10px; font-weight: 700; color: white; pointer-events: none; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
         
-        .map-area { border-radius: 2rem; background: rgba(0, 0, 0, 0.1); box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1); }
+        .map-area { border-radius: 2rem; background: rgba(0, 0, 0, 0.15); box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1); position: relative; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .animate-in { animation: fadeIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        
+        /* สไตล์ปุ่ม Google Login ให้พื้นหลังขาวเต็ม */
+        #g_id_onload, .g_id_signin { background-color: white; border-radius: 999px; }
     </style>
 </head>
 <body>
 
     <div class="stars-bg"></div>
 
-    <div id="loginPage" class="fixed inset-0 z-[100] flex items-center justify-center p-6">
+    <div id="loginPage" class="relative z-10 flex min-h-screen items-center justify-center p-6">
         <div class="glass-panel p-10 w-full max-w-md text-center rounded-[2.5rem]">
             <div class="w-24 h-24 mx-auto mb-6 relative">
-                <div class="absolute inset-0 bg-white/30 rounded-full blur-xl"></div>
-                <img src="photo/logo.png" alt="Logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/th/thumb/b/b3/Ntun_logo.png/250px-Ntun_logo.png'" class="relative z-10 w-full h-full object-contain drop-shadow-md">
+                <img src="https://upload.wikimedia.org/wikipedia/th/thumb/b/b3/Ntun_logo.png/250px-Ntun_logo.png" alt="Logo" class="relative z-10 w-full h-full object-contain drop-shadow-lg">
             </div>
             
-            <h1 class="text-3xl font-bold mb-1 tracking-tight text-white uppercase">NTUN SPACE</h1>
-            <p class="text-white/70 mb-8 font-light text-sm">Experience the future of seating</p>
+            <h1 class="text-3xl font-bold mb-1 tracking-tight text-white uppercase drop-shadow-md">NTUN SPACE</h1>
+            <p class="text-white/90 mb-8 font-light text-sm">ระบบจองที่นั่งออนไลน์</p>
             
-            <div class="bg-white rounded-full p-2 w-fit mx-auto mb-4 shadow-lg">
+            <div class="bg-white rounded-full p-2 w-fit mx-auto mb-4 shadow-xl">
                 <div id="g_id_onload" 
                      data-client_id="118310489688-8o6l3ogkihci3des8aab8qdd83a7r6gg.apps.googleusercontent.com" 
                      data-callback="handleGoogleLogin"></div>
-                <div class="g_id_signin flex justify-center" data-type="standard" data-shape="pill" data-theme="outline"></div>
+                <div class="g_id_signin flex justify-center" data-type="standard" data-shape="pill" data-theme="outline" data-size="large"></div>
             </div>
             
-            <p class="mt-6 text-[10px] opacity-70 font-medium tracking-wide text-white uppercase">@ntun.ac.th authentication</p>
+            <p class="mt-6 text-[10px] opacity-80 font-medium tracking-wide text-white uppercase">รองรับเฉพาะบัญชี @ntun.ac.th เท่านั้น</p>
         </div>
     </div>
 
-    <div id="mainApp" class="hidden min-h-screen flex flex-col relative">
+    <div id="mainApp" class="hidden min-h-screen flex flex-col relative z-10">
         
-        <header class="p-6 flex flex-col xl:flex-row justify-between items-center gap-4 max-w-7xl mx-auto w-full z-50 animate-in">
-            <div class="nav-pill pl-4 pr-6 py-2.5 flex items-center gap-4">
-                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center p-1.5">
-                    <img src="photo/logo.png" alt="Logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/th/thumb/b/b3/Ntun_logo.png/250px-Ntun_logo.png'" class="w-full h-full object-contain">
+        <header class="p-6 flex flex-col xl:flex-row justify-between items-center gap-4 max-w-7xl mx-auto w-full animate-in">
+            <div class="nav-pill pl-4 pr-6 py-2 flex items-center gap-4">
+                <div class="w-10 h-10 flex items-center justify-center">
+                    <img src="https://upload.wikimedia.org/wikipedia/th/thumb/b/b3/Ntun_logo.png/250px-Ntun_logo.png" class="w-full h-full object-contain drop-shadow-md">
                 </div>
                 <div class="text-left">
-                    <h1 class="text-white font-bold text-sm md:text-base leading-tight uppercase tracking-widest">NTUN SPACE</h1>
-                    <p class="text-white/70 text-[10px] md:text-xs">Premium Seating System</p>
+                    <h1 class="text-white font-bold text-sm md:text-base leading-tight uppercase tracking-widest drop-shadow-sm">NTUN SPACE</h1>
+                    <p class="text-white/80 text-[10px] md:text-xs">Premium Seating</p>
                 </div>
             </div>
 
-            <div class="nav-pill p-2 flex items-center gap-2">
+            <div class="nav-pill p-1.5 flex items-center gap-2">
                 <button onclick="activeRoomId=null; renderUI()" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all">
                     <i class='bx bx-home-alt text-lg'></i> แดชบอร์ด
                 </button>
-                <div class="flex items-center gap-2 px-3 border-l border-white/20">
-                    <img id="userImg" src="" class="w-8 h-8 rounded-full border border-white/50">
-                    <span id="userName" class="text-white text-sm font-medium hidden md:block"></span>
+                <div class="flex items-center gap-2 px-3 border-l border-white/30">
+                    <img id="userImg" src="" class="w-8 h-8 rounded-full border-2 border-white/80 shadow-sm">
+                    <span id="userName" class="text-white text-sm font-medium hidden md:block drop-shadow-sm"></span>
                 </div>
-                <button onclick="logout()" class="bg-red-400/80 hover:bg-red-500 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all shadow-sm">
+                <button onclick="logout()" class="bg-white/20 hover:bg-red-400 hover:text-white text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all">
                     <i class='bx bx-log-out text-lg'></i> <span class="hidden md:inline">ออกจากระบบ</span>
                 </button>
             </div>
@@ -144,25 +145,20 @@
 
         <main class="flex-grow max-w-5xl mx-auto w-full px-6 pb-20">
             <section id="welcomeSection" class="mt-8 mb-10 text-left animate-in" style="animation-delay: 0.1s;">
-                <p class="text-blue-100 mb-1 font-light tracking-wide">ยินดีต้อนรับกลับมา</p>
-                <h2 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-white drop-shadow-md">
+                <p class="text-white/80 mb-1 font-light tracking-wide">ยินดีต้อนรับกลับมา</p>
+                <h2 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-white drop-shadow-lg">
                     สวัสดี, <span id="welcomeName">นักเรียน</span>
                 </h2>
-                
-                <div class="inline-flex items-center border border-white/30 rounded-full px-4 py-1.5 bg-white/10 text-white text-sm backdrop-blur-md shadow-sm">
-                    <span class="inline-block w-2 h-2 rounded-full bg-white mr-2 animate-pulse"></span> 
-                    พร้อมใช้งานระบบจองที่นั่ง
-                </div>
             </section>
 
             <section id="staffAction" class="hidden mb-8 animate-in">
-                <div class="flex flex-col md:flex-row gap-4 items-center justify-between glass-panel p-6 rounded-3xl">
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between glass-panel p-4 md:p-6 rounded-[2rem]">
                     <div class="relative flex-1 w-full max-w-md">
-                        <i class='bx bx-search absolute left-4 top-1/2 -translate-y-1/2 text-white/60 text-lg'></i>
-                        <input type="text" id="roomSearch" oninput="renderDashboard()" class="w-full bg-black/20 border border-white/20 rounded-full py-3 pl-12 pr-6 outline-none text-white placeholder:text-white/50 focus:bg-black/30 transition-all" placeholder="ค้นหาห้องเรียน...">
+                        <i class='bx bx-search absolute left-4 top-1/2 -translate-y-1/2 text-white/80 text-lg'></i>
+                        <input type="text" id="roomSearch" oninput="renderDashboard()" class="w-full bg-black/20 border border-white/30 rounded-full py-3 pl-12 pr-6 outline-none text-white placeholder:text-white/70 focus:bg-black/30 transition-all shadow-inner" placeholder="ค้นหาห้องเรียน...">
                     </div>
-                    <button onclick="showCreateModal()" class="bg-white hover:bg-gray-100 text-[#2d5aa8] px-6 py-3 w-full md:w-auto rounded-full font-bold transition-all shadow-lg flex items-center justify-center gap-2">
-                        <i class='bx bx-plus'></i> สร้างห้องเรียน
+                    <button onclick="showCreateModal()" class="bg-white hover:bg-gray-100 text-[#5AB2FF] px-6 py-3 w-full md:w-auto rounded-full font-bold transition-all shadow-lg flex items-center justify-center gap-2">
+                        <i class='bx bx-plus text-xl'></i> สร้างห้องเรียน
                     </button>
                 </div>
             </section>
@@ -236,7 +232,6 @@
         function logout() { localStorage.removeItem('ntun_session_v12'); location.reload(); }
 
         function renderUI() {
-            // ซ่อน/แสดง คำทักทาย ถ้าอยู่ในหน้าห้องจะซ่อน
             if(activeRoomId) {
                 document.getElementById('welcomeSection').classList.add('hidden');
                 renderRoomView();
@@ -263,26 +258,26 @@
                         const percent = (booked/total)*100 || 0;
                         
                         html += `
-                        <div class="glass-panel p-8 rounded-[2rem] hover:bg-white/[0.15] transition-all relative overflow-hidden group">
+                        <div class="glass-panel p-8 rounded-[2rem] hover:bg-white/[0.2] transition-all relative overflow-hidden">
                             <div class="flex justify-between items-start mb-4">
-                                <span class="bg-white/20 text-white px-3 py-1 rounded-full text-xs font-mono tracking-widest border border-white/30">ID: ${id}</span>
-                                <button onclick="deleteRoom('${id}')" class="text-white/50 hover:text-red-400 transition"><i class='bx bx-trash text-xl'></i></button>
+                                <span class="bg-white/30 text-white px-3 py-1 rounded-full text-xs font-mono tracking-widest border border-white/40 shadow-sm">ID: ${id}</span>
+                                <button onclick="deleteRoom('${id}')" class="text-white/60 hover:text-red-400 transition bg-black/10 hover:bg-black/20 p-2 rounded-full"><i class='bx bx-trash text-xl'></i></button>
                             </div>
-                            <h3 class="text-2xl font-bold mb-2 text-white">${room.name}</h3>
+                            <h3 class="text-2xl font-bold mb-2 text-white drop-shadow-sm">${room.name}</h3>
                             
-                            <div class="flex justify-between text-sm text-blue-100 font-medium mb-2 mt-6">
+                            <div class="flex justify-between text-sm text-white/90 font-medium mb-2 mt-6">
                                 <span>ความจุที่นั่ง</span>
-                                <span>${booked} / ${total} ที่นั่ง</span>
+                                <span>${booked} / ${total} คน</span>
                             </div>
-                            <div class="w-full bg-black/20 rounded-full h-2.5 overflow-hidden mb-6">
-                                <div class="bg-green-400 h-2.5 rounded-full" style="width: ${percent}%"></div>
+                            <div class="w-full bg-black/20 rounded-full h-3 overflow-hidden mb-6 shadow-inner">
+                                <div class="bg-green-400 h-3 rounded-full shadow-[0_0_10px_rgba(74,222,128,0.5)]" style="width: ${percent}%"></div>
                             </div>
                             
                             <div class="space-y-3 mt-auto">
-                                <button onclick="enterRoom('${id}')" class="w-full bg-white text-[#2d5aa8] py-3 rounded-2xl font-bold hover:bg-gray-100 transition-colors shadow-md">เปิดห้องเรียน</button>
+                                <button onclick="enterRoom('${id}')" class="w-full bg-white text-[#5AB2FF] py-3 rounded-2xl font-bold hover:bg-gray-50 transition-colors shadow-lg text-lg">เปิดห้องเรียน</button>
                                 <div class="grid grid-cols-2 gap-3">
-                                    <button onclick="resetLayout('${id}')" class="bg-white/10 hover:bg-white/20 py-2.5 rounded-xl text-xs font-medium text-white border border-white/20 transition-all">จัดผังใหม่</button>
-                                    <button onclick="clearAllBookings('${id}')" class="bg-white/10 hover:bg-red-500/20 py-2.5 rounded-xl text-xs font-medium text-red-200 border border-white/20 hover:border-red-400/50 transition-all">ล้างการจอง</button>
+                                    <button onclick="resetLayout('${id}')" class="bg-black/10 hover:bg-black/20 py-2.5 rounded-xl text-sm font-medium text-white border border-white/20 transition-all">จัดผังใหม่</button>
+                                    <button onclick="clearAllBookings('${id}')" class="bg-red-500/20 hover:bg-red-500/40 py-2.5 rounded-xl text-sm font-medium text-red-100 border border-red-300/30 transition-all">ล้างการจอง</button>
                                 </div>
                             </div>
                         </div>`;
@@ -294,7 +289,6 @@
                 const myRoomId = Object.keys(classrooms).find(id => classrooms[id].seats.some(s => s.bookedBy === currentUser.email));
                 
                 if (myRoomId) {
-                    // จองแล้ว -> แสดงการ์ดสถานะการจอง (แบบ JWC card)
                     const room = classrooms[myRoomId];
                     const seat = room.seats.find(s => s.bookedBy === currentUser.email);
                     const booked = room.seats.filter(s => s.bookedBy).length;
@@ -302,51 +296,54 @@
                     
                     html = `
                     <div class="animate-in" style="animation-delay: 0.2s;">
-                        <div class="glass-panel p-8 md:p-10 rounded-[2.5rem] bg-[#3a4e9b]/40 relative overflow-hidden shadow-2xl">
+                        <div class="flex items-center gap-3 mb-4 text-white">
+                            <i class='bx bx-check-shield text-2xl'></i>
+                            <span class="font-semibold text-lg drop-shadow-sm">สถานะการจองของคุณ</span>
+                        </div>
+                        <div class="glass-panel p-8 md:p-10 rounded-[2.5rem] bg-white/10 relative overflow-hidden shadow-2xl">
                             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-                                <h2 class="text-3xl md:text-4xl font-bold text-white">${room.name}</h2>
-                                <span class="bg-green-400/90 text-green-900 text-sm font-bold px-4 py-2 rounded-full flex items-center gap-1.5 shadow-lg shrink-0">
-                                    <i class='bx bx-check-circle text-lg'></i> จองที่นั่งแล้ว
+                                <h2 class="text-3xl md:text-4xl font-bold text-white drop-shadow-md">${room.name}</h2>
+                                <span class="bg-green-400 text-green-900 text-sm font-bold px-4 py-2 rounded-full flex items-center gap-1.5 shadow-lg">
+                                    <i class='bx bx-check-circle text-lg'></i> จองสำเร็จแล้ว
                                 </span>
                             </div>
                             
-                            <p class="text-blue-100/80 mb-10 max-w-3xl leading-relaxed text-sm md:text-base">
-                                คุณได้ทำการจองโต๊ะในชั้นเรียนนี้เรียบร้อยแล้ว ที่นั่งของคุณคือ <span class="font-bold text-white bg-white/20 px-3 py-1 rounded-lg text-xl tracking-wider">#${seat.id}</span>
+                            <p class="text-white/90 mb-10 max-w-3xl leading-relaxed text-sm md:text-base">
+                                คุณได้จองโต๊ะเรียบร้อยแล้ว ที่นั่งของคุณคือ <span class="font-bold text-[#5AB2FF] bg-white px-3 py-1 rounded-lg text-xl tracking-wider shadow-sm ml-1">#${seat.id}</span>
                             </p>
                             
-                            <div class="flex justify-between text-sm text-blue-100 font-medium mb-3">
+                            <div class="flex justify-between text-sm text-white/90 font-medium mb-3">
                                 <span>จำนวนผู้จองทั้งหมด</span>
-                                <span>${booked} / ${room.seats.length} ที่นั่ง</span>
+                                <span>${booked} / ${room.seats.length} คน</span>
                             </div>
                             <div class="w-full bg-black/20 rounded-full h-3 overflow-hidden shadow-inner">
                                 <div class="bg-green-400 h-3 rounded-full shadow-[0_0_10px_rgba(74,222,128,0.5)] transition-all duration-1000" style="width: ${percent}%"></div>
                             </div>
                             
                             <div class="mt-10">
-                                 <button onclick="enterRoom('${myRoomId}')" class="w-full md:w-auto bg-white/10 hover:bg-white/20 text-white px-8 py-3.5 rounded-full font-medium transition-all backdrop-blur-sm border border-white/30 flex items-center justify-center gap-2">
-                                    <i class='bx bx-map-alt'></i> ดูผังที่นั่งในห้อง
+                                 <button onclick="enterRoom('${myRoomId}')" class="w-full md:w-auto bg-white/20 hover:bg-white/30 text-white px-8 py-3.5 rounded-full font-medium transition-all backdrop-blur-sm border border-white/40 shadow-lg flex items-center justify-center gap-2">
+                                    <i class='bx bx-map-alt text-xl'></i> ดูผังที่นั่ง
                                  </button>
                             </div>
                         </div>
                     </div>`;
                 } else {
-                    // ยังไม่ได้จอง -> แสดงช่องกรอก ROOM ID โค้ดเดิม แต่สไตล์ใหม่
                     html = `
                     <div class="animate-in" style="animation-delay: 0.2s;">
-                        <div class="flex items-center gap-3 mb-4 text-white/90">
+                        <div class="flex items-center gap-3 mb-4 text-white">
                             <i class='bx bx-door-open text-2xl'></i>
-                            <span class="font-semibold text-lg">กรอกรหัสเข้าชั้นเรียน</span>
+                            <span class="font-semibold text-lg drop-shadow-sm">กรอกรหัสเข้าชั้นเรียน</span>
                         </div>
-                        <div class="glass-panel p-8 md:p-10 rounded-[2.5rem] relative overflow-hidden bg-black/10">
+                        <div class="glass-panel p-8 md:p-10 rounded-[2.5rem] relative overflow-hidden bg-black/10 shadow-2xl">
                             <div class="flex flex-col md:flex-row gap-4">
-                                <input id="joinCode" class="flex-1 bg-black/20 border border-white/30 rounded-2xl px-6 py-5 text-xl font-bold tracking-[0.3em] focus:outline-none focus:bg-black/30 transition-all uppercase placeholder:text-white/40 text-white shadow-inner" placeholder="ROOM ID">
-                                <button onclick="joinByCode()" class="bg-white text-[#2d5aa8] px-10 py-5 rounded-2xl font-black text-lg hover:bg-gray-100 active:scale-95 transition-all shadow-lg whitespace-nowrap">JOIN ROOM</button>
+                                <input id="joinCode" class="flex-1 bg-black/20 border border-white/40 rounded-2xl px-6 py-5 text-xl font-bold tracking-[0.3em] focus:outline-none focus:bg-black/30 transition-all uppercase placeholder:text-white/50 text-white shadow-inner" placeholder="ROOM ID">
+                                <button onclick="joinByCode()" class="bg-white text-[#5AB2FF] px-10 py-5 rounded-2xl font-black text-lg hover:bg-gray-100 active:scale-95 transition-all shadow-lg whitespace-nowrap">JOIN ROOM</button>
                             </div>
                         </div>
                     </div>`;
                 }
             }
-            area.innerHTML = html || `<p class="text-center text-white/70 py-20 font-medium text-lg">ไม่พบข้อมูลห้องเรียนในขณะนี้</p>`;
+            area.innerHTML = html || `<p class="text-center text-white/80 py-20 font-medium text-lg">ไม่พบข้อมูลห้องเรียนในขณะนี้</p>`;
         }
 
         function renderRoomView() {
@@ -354,27 +351,27 @@
             const isStaff = ['super_admin', 'admin', 'teacher'].includes(currentUser.role);
             
             document.getElementById('contentArea').innerHTML = `
-                <div class="glass-panel p-6 md:p-8 rounded-[2.5rem] animate-in flex flex-col items-center">
+                <div class="glass-panel p-6 md:p-8 rounded-[2.5rem] animate-in flex flex-col items-center relative z-10 shadow-2xl">
                     
                     <div class="w-full flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
-                        <button onclick="activeRoomId=null; renderUI()" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-2.5 rounded-full flex items-center gap-2 transition-all font-medium self-start md:self-auto">
+                        <button onclick="activeRoomId=null; renderUI()" class="bg-black/20 hover:bg-black/30 border border-white/30 text-white px-6 py-2.5 rounded-full flex items-center gap-2 transition-all font-medium self-start md:self-auto shadow-sm">
                             <i class='bx bx-left-arrow-alt text-xl'></i> ย้อนกลับ
                         </button>
                         
                         <div class="text-center">
-                            <h2 class="text-2xl md:text-3xl font-bold text-white">${room.name}</h2>
-                            <p class="text-white/60 text-xs mt-1 uppercase tracking-widest">Seating Map</p>
+                            <h2 class="text-3xl font-bold text-white drop-shadow-md">${room.name}</h2>
+                            <p class="text-white/80 text-xs mt-1 uppercase tracking-widest">Seating Map</p>
                         </div>
                         
                         <div class="flex gap-2 self-end md:self-auto">
-                            ${isStaff ? `<button onclick="exportExcel()" class="bg-emerald-500/90 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg flex items-center gap-2"><i class='bx bxs-file-export'></i> EXPORT</button>` : '<div class="w-[100px] hidden md:block"></div>'}
+                            ${isStaff ? `<button onclick="exportExcel()" class="bg-white text-green-600 px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg hover:bg-gray-50 flex items-center gap-2"><i class='bx bxs-file-export text-lg'></i> EXPORT</button>` : '<div class="w-[100px] hidden md:block"></div>'}
                         </div>
                     </div>
 
-                    <div class="map-area w-full max-w-[1000px] p-6 md:p-10 h-[600px] md:h-[700px] relative overflow-auto glass-panel border-0 bg-black/5">
+                    <div class="map-area w-full max-w-[1000px] p-6 md:p-10 h-[600px] md:h-[700px] relative overflow-auto border border-white/20">
                         <div class="w-[900px] h-full relative mx-auto" id="roomCanvas">
-                            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-3 bg-white/40 rounded-full blur-[1px]"></div>
-                            <div class="absolute top-6 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.6em] text-white/60 font-black uppercase drop-shadow-sm">Front of Stage / Screen</div>
+                            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-3 bg-white/50 rounded-full blur-[2px]"></div>
+                            <div class="absolute top-6 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.6em] text-white/80 font-black uppercase drop-shadow-md">หน้ากระดาน / เวที</div>
                             
                             ${room.seats.map(s => {
                                 const isMe = s.bookedBy === currentUser.email;
@@ -396,8 +393,8 @@
                         </div>
                     </div>
                     
-                    <p class="text-white/50 text-xs mt-6 text-center">
-                        ${isStaff ? "สามารถลากเพื่อย้ายโต๊ะได้ หรือคลิกโต๊ะเพื่อยกเลิกการจอง" : "คลิกที่โต๊ะว่างเพื่อทำการจองที่นั่ง"}
+                    <p class="text-white/80 text-sm mt-6 text-center font-light bg-black/20 px-6 py-2 rounded-full border border-white/20 shadow-sm">
+                        ${isStaff ? "ลากเพื่อย้ายโต๊ะ หรือคลิกโต๊ะเพื่อยกเลิกการจอง" : "คลิกที่โต๊ะว่างเพื่อทำการจองที่นั่ง (โต๊ะสีเขียวคือที่นั่งของคุณ)"}
                     </p>
                 </div>`;
         }
@@ -406,7 +403,7 @@
             const code = document.getElementById('joinCode').value.trim().toUpperCase();
             if (!code) return;
             if (classrooms[code]) enterRoom(code);
-            else Swal.fire({ icon: 'warning', title: 'ไม่พบห้อง', text: 'ตรวจสอบรหัสห้องอีกครั้ง', background: 'rgba(255,255,255,0.95)', color: '#1e293b' });
+            else Swal.fire({ icon: 'warning', title: 'ไม่พบห้อง', text: 'ตรวจสอบรหัสห้องอีกครั้ง', background: 'rgba(255,255,255,0.95)' });
         }
 
         async function enterRoom(id) {
@@ -414,7 +411,7 @@
             const isStaff = ['super_admin', 'admin', 'teacher'].includes(currentUser.role);
             if (room.password && !isStaff) {
                 const { value: pass } = await Swal.fire({
-                    title: 'ใส่รหัสผ่านห้อง', input: 'password', showCancelButton: true, background: 'rgba(255,255,255,0.95)', color: '#1e293b'
+                    title: 'ใส่รหัสผ่านห้อง', input: 'password', showCancelButton: true, background: 'rgba(255,255,255,0.95)'
                 });
                 if (!pass || pass !== room.password) {
                     if(pass) Swal.fire({title: 'รหัสผ่านไม่ถูกต้อง', icon: 'error', background: 'rgba(255,255,255,0.95)'});
@@ -428,7 +425,7 @@
         async function clearAllBookings(roomId) {
             const res = await Swal.fire({
                 title: 'ล้างการจองทั้งหมด?', text: "รายชื่อผู้จองจะถูกลบออก แต่ผังที่นั่งจะยังคงอยู่", icon: 'warning',
-                showCancelButton: true, confirmButtonColor: '#ef4444', background: 'rgba(255,255,255,0.95)', color: '#1e293b'
+                showCancelButton: true, confirmButtonColor: '#ef4444', background: 'rgba(255,255,255,0.95)'
             });
             if (res.isConfirmed) {
                 const clearedSeats = classrooms[roomId].seats.map(s => ({ ...s, bookedBy: null, name: null }));
@@ -487,8 +484,8 @@
             if (seat.bookedBy) {
                 if (seat.bookedBy === currentUser.email || isStaff) {
                     const res = await Swal.fire({ 
-                        title: 'ยกเลิกการจอง?', text: `ยกเลิกที่นั่ง ${sid}`, icon: 'question', 
-                        showCancelButton: true, confirmButtonColor: '#ef4444', background: 'rgba(255,255,255,0.95)', color: '#1e293b'
+                        title: 'ยกเลิกการจอง?', text: `ต้องการยกเลิกที่นั่ง ${sid} ใช่หรือไม่`, icon: 'question', 
+                        showCancelButton: true, confirmButtonColor: '#ef4444', background: 'rgba(255,255,255,0.95)'
                     });
                     if(res.isConfirmed) { seat.bookedBy = null; seat.name = null; db.collection("classrooms").doc(activeRoomId).update({ seats: room.seats }); }
                 }
@@ -498,7 +495,7 @@
             if (!isStaff) {
                 for (const rId in classrooms) {
                     if (classrooms[rId].seats.some(s => s.bookedBy === currentUser.email)) {
-                        return Swal.fire({ icon: 'error', title: 'ไม่อนุญาต', text: 'คุณจองที่นั่งไปแล้วในห้องอื่น', background: 'rgba(255,255,255,0.95)', color: '#1e293b' });
+                        return Swal.fire({ icon: 'error', title: 'ไม่อนุญาต', text: 'คุณจองที่นั่งไปแล้วในห้องอื่น', background: 'rgba(255,255,255,0.95)' });
                     }
                 }
             }
@@ -509,7 +506,7 @@
 
         function showCreateModal() {
             Swal.fire({
-                title: 'สร้างห้องเรียนใหม่', background: 'rgba(255,255,255,0.95)', color: '#1e293b',
+                title: 'สร้างห้องเรียนใหม่', background: 'rgba(255,255,255,0.95)',
                 html: `<div class="text-left space-y-4 p-2 text-slate-700">
                     <label class="font-bold text-sm">ชื่อห้องเรียน</label>
                     <input id="swal-name" class="w-full bg-slate-100 border border-slate-200 p-3 rounded-xl focus:outline-blue-400" placeholder="เช่น ม.5/10">
@@ -518,7 +515,7 @@
                     <label class="font-bold text-sm">รหัสผ่านห้อง (ถ้ามี)</label>
                     <input id="swal-pass" class="w-full bg-slate-100 border border-slate-200 p-3 rounded-xl focus:outline-blue-400" placeholder="รหัสผ่านสำหรับนักเรียน">
                 </div>`,
-                showCancelButton: true, confirmButtonText: 'สร้างห้อง', confirmButtonColor: '#2d5aa8',
+                showCancelButton: true, confirmButtonText: 'สร้างห้อง', confirmButtonColor: '#5AB2FF',
                 preConfirm: () => {
                     const name = document.getElementById('swal-name').value;
                     const count = document.getElementById('swal-count').value;
@@ -533,7 +530,6 @@
                     for(let i=0; i<parseInt(count); i++) {
                         const col = i % 8; const row = Math.floor(i / 8);
                         let xOffset = (col >= 3 ? 60 : 0) + (col >= 6 ? 60 : 0);
-                        // ระยะเดิมของการจัดโต๊ะ
                         seats.push({ id: i+1, x: (col * 85) + 80 + xOffset, y: (row * 115) + 120, bookedBy: null, name: null });
                     }
                     db.collection("classrooms").doc(id).set({ name, seats, password: pass || null });
